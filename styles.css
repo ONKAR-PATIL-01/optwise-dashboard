@@ -1,0 +1,1263 @@
+/* ==========================================================================
+   Optwise — broker-style dashboard
+   Light, dense, bordered. Modelled on Indian broker terminals (Dhan).
+   ========================================================================== */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+:root {
+    /* Brand */
+    --nav-bg: #1559b3;
+    --nav-bg-dark: #10478f;
+    --brand: #1565c0;
+    --brand-hover: #0f4f9e;
+    --brand-50: #eaf1fb;
+    --brand-100: #d4e4f7;
+
+    /* Surfaces */
+    --page: #f4f5f7;
+    --surface: #ffffff;
+    --surface-alt: #fafbfc;
+    --surface-hover: #f5f7fa;
+
+    /* Lines */
+    --border: #e4e7eb;
+    --border-strong: #d2d7dd;
+
+    /* Ink */
+    --ink: #1b1f24;
+    --ink-2: #5b6471;
+    --ink-3: #8a929e;
+
+    /* Market semantics */
+    --pos: #00a35c;
+    --pos-bg: #e6f6ee;
+    --neg: #e2453b;
+    --neg-bg: #fdecea;
+    --warn: #c77700;
+    --warn-bg: #fdf3e3;
+    --info: #1565c0;
+    --info-bg: #eaf1fb;
+
+    --radius: 6px;
+    --radius-lg: 8px;
+    --shadow-sm: 0 1px 2px rgba(16, 24, 40, 0.04);
+    --shadow-md: 0 2px 8px rgba(16, 24, 40, 0.08);
+    --shadow-pop: 0 8px 24px rgba(16, 24, 40, 0.12);
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--page);
+    color: var(--ink);
+    font-size: 13px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Numbers always align in columns */
+.num,
+.portfolio-stat-value,
+.card-value,
+.metric-value,
+.profit-amount,
+.ticker-value,
+.ticker-change,
+table td,
+table th {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum" 1;
+}
+
+/* ==========================================================================
+   1. Top app bar
+   ========================================================================== */
+
+.topbar {
+    background: var(--nav-bg);
+    color: #fff;
+    position: sticky;
+    top: 0;
+    z-index: 200;
+}
+
+.topbar-inner {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 0 16px;
+    height: 48px;
+    max-width: 1680px;
+    margin: 0 auto;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+}
+
+.brand-mark {
+    width: 22px;
+    height: 22px;
+    border-radius: 5px;
+    background: #fff;
+    color: var(--nav-bg);
+    display: grid;
+    place-items: center;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+/* GIFT Nifty pill in the bar */
+.gift-strip {
+    display: flex;
+    align-items: baseline;
+    gap: 7px;
+    font-size: 12px;
+    white-space: nowrap;
+    padding-left: 16px;
+    border-left: 1px solid rgba(255, 255, 255, 0.22);
+}
+
+.gift-label {
+    color: rgba(255, 255, 255, 0.78);
+}
+
+.gift-value {
+    font-weight: 600;
+}
+
+.gift-change {
+    font-size: 11px;
+}
+
+.topbar .up {
+    color: #7ee2b0;
+}
+
+.topbar .down {
+    color: #ffb3ad;
+}
+
+/* Primary nav */
+.topnav {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    margin-left: 8px;
+}
+
+.topnav a {
+    color: rgba(255, 255, 255, 0.84);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 14px 11px;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: color 0.15s ease;
+}
+
+.topnav a:hover {
+    color: #fff;
+}
+
+.topnav a.active {
+    color: #fff;
+    font-weight: 600;
+    border-bottom-color: #fff;
+}
+
+.topbar-spacer {
+    flex: 1;
+}
+
+.topnav-secondary a {
+    padding: 14px 9px;
+    font-weight: 400;
+}
+
+.market-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.85);
+    white-space: nowrap;
+}
+
+.status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #9aa6b5;
+}
+
+.status-dot.live {
+    background: #4ade80;
+    box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.22);
+}
+
+.avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.18);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    display: grid;
+    place-items: center;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    flex-shrink: 0;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+}
+
+.user-name {
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.user-role {
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.7);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* ==========================================================================
+   2. Index ticker strip
+   ========================================================================== */
+
+.ticker-strip {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 48px;
+    z-index: 190;
+}
+
+.ticker-inner {
+    display: flex;
+    align-items: stretch;
+    max-width: 1680px;
+    margin: 0 auto;
+    padding: 0 16px;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.ticker-inner::-webkit-scrollbar {
+    display: none;
+}
+
+.ticker-item {
+    display: flex;
+    align-items: baseline;
+    gap: 7px;
+    padding: 9px 18px 9px 0;
+    margin-right: 18px;
+    border-right: 1px solid var(--border);
+    white-space: nowrap;
+}
+
+.ticker-item:last-child {
+    border-right: none;
+}
+
+.ticker-name {
+    color: var(--ink-2);
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.ticker-value {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+}
+
+.ticker-change {
+    font-size: 11.5px;
+    font-weight: 500;
+}
+
+.up {
+    color: var(--pos);
+}
+
+.down {
+    color: var(--neg);
+}
+
+/* ==========================================================================
+   3. Page grid
+   ========================================================================== */
+
+.app-grid {
+    display: grid;
+    grid-template-columns: 290px minmax(0, 1fr) 320px;
+    gap: 14px;
+    max-width: 1680px;
+    margin: 0 auto;
+    padding: 14px 16px 40px;
+    align-items: start;
+}
+
+.col-left,
+.col-right {
+    position: sticky;
+    top: 92px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.col-main {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    min-width: 0;
+}
+
+/* ==========================================================================
+   4. Panel primitive
+   ========================================================================== */
+
+.panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+}
+
+.panel-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+}
+
+.panel-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+    margin: 0;
+    letter-spacing: -0.005em;
+}
+
+.panel-sub {
+    font-size: 11px;
+    color: var(--ink-3);
+    font-weight: 400;
+}
+
+.panel-body {
+    padding: 14px;
+}
+
+.panel-body.flush {
+    padding: 0;
+}
+
+.panel-link {
+    font-size: 12px;
+    color: var(--brand);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.panel-link:hover {
+    text-decoration: underline;
+}
+
+/* Segmented control */
+.seg {
+    display: inline-flex;
+    background: var(--page);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 2px;
+    gap: 2px;
+}
+
+.seg button {
+    border: 0;
+    background: transparent;
+    font: inherit;
+    font-size: 11.5px;
+    font-weight: 500;
+    color: var(--ink-2);
+    padding: 4px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.seg button.active {
+    background: var(--surface);
+    color: var(--ink);
+    font-weight: 600;
+    box-shadow: var(--shadow-sm);
+}
+
+/* ==========================================================================
+   5. Forms (left rail — strategy parameters)
+   ========================================================================== */
+
+.form-group {
+    margin-bottom: 12px;
+}
+
+.form-group:last-of-type {
+    margin-bottom: 14px;
+}
+
+.form-group label,
+.sidebar .form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ink-2);
+    text-transform: none;
+    letter-spacing: 0;
+}
+
+.form-group input,
+.form-group select,
+.sidebar .form-group input,
+.sidebar .form-group select {
+    width: 100%;
+    padding: 7px 10px;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: var(--ink);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.form-group select,
+.sidebar .form-group select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%235b6471' d='M6 8.5 2 4.5h8z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 9px center;
+    padding-right: 26px;
+}
+
+.form-group input:hover,
+.form-group select:hover,
+.sidebar .form-group input:hover,
+.sidebar .form-group select:hover {
+    border-color: var(--ink-3);
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.sidebar .form-group input:focus,
+.sidebar .form-group select:focus {
+    outline: none;
+    border-color: var(--brand);
+    box-shadow: 0 0 0 3px var(--brand-50);
+    background: var(--surface);
+}
+
+/* Two inputs side by side */
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.form-row .form-group {
+    margin-bottom: 12px;
+}
+
+.field-hint {
+    font-size: 10.5px;
+    color: var(--ink-3);
+    margin-top: 4px;
+}
+
+/* ==========================================================================
+   6. Buttons
+   ========================================================================== */
+
+.btn-primary,
+.sidebar .btn-primary {
+    width: 100%;
+    margin: 0;
+    padding: 9px 14px;
+    border: 0;
+    border-radius: var(--radius);
+    background: var(--brand);
+    color: #fff;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.btn-primary:hover:not(:disabled) {
+    background: var(--brand-hover);
+}
+
+.btn-primary:active:not(:disabled) {
+    background: var(--nav-bg-dark);
+}
+
+.btn-primary:disabled {
+    background: var(--border-strong);
+    color: var(--ink-3);
+    cursor: not-allowed;
+}
+
+.btn-secondary {
+    padding: 6px 12px;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: var(--ink);
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease;
+    white-space: nowrap;
+}
+
+.btn-secondary:hover {
+    background: var(--surface-hover);
+    border-color: var(--ink-3);
+}
+
+/* ==========================================================================
+   7. Portfolio overview — KPI strip
+   ========================================================================== */
+
+.portfolio-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+}
+
+.portfolio-stat-card {
+    padding: 13px 16px;
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.portfolio-stat-card:last-child {
+    border-right: none;
+}
+
+.portfolio-stat-label {
+    font-size: 11px;
+    color: var(--ink-2);
+    font-weight: 500;
+}
+
+.portfolio-stat-value {
+    font-size: 19px;
+    font-weight: 650;
+    letter-spacing: -0.015em;
+    color: var(--ink);
+}
+
+.portfolio-stat-highlight .portfolio-stat-value {
+    color: var(--pos);
+}
+
+.portfolio-stat-risk .portfolio-stat-value {
+    color: var(--neg);
+}
+
+.stat-meta {
+    font-size: 10.5px;
+    color: var(--ink-3);
+}
+
+/* ==========================================================================
+   8. Monthly P&L cards
+   ========================================================================== */
+
+.monthly-profits-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
+    gap: 10px;
+}
+
+.profit-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 10px 12px;
+    background: var(--surface-alt);
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.profit-card:hover {
+    box-shadow: var(--shadow-md);
+}
+
+.profit-month {
+    font-size: 10.5px;
+    font-weight: 600;
+    color: var(--ink-2);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.profit-amount {
+    font-size: 15px;
+    font-weight: 650;
+    letter-spacing: -0.01em;
+}
+
+.profit-positive {
+    border-left: 3px solid var(--pos);
+}
+
+.profit-positive .profit-amount {
+    color: var(--pos);
+}
+
+.profit-negative {
+    border-left: 3px solid var(--neg);
+}
+
+.profit-negative .profit-amount {
+    color: var(--neg);
+}
+
+/* ==========================================================================
+   9. Results panel
+   ========================================================================== */
+
+.results-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.backtest-info-banner {
+    margin: 0;
+    padding: 9px 12px;
+    background: var(--info-bg);
+    border: 1px solid var(--brand-100);
+    border-radius: var(--radius);
+    color: var(--nav-bg-dark);
+    font-size: 12px;
+}
+
+.summary-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+}
+
+.card {
+    padding: 13px 16px;
+    border-right: 1px solid var(--border);
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.card:last-child {
+    border-right: none;
+}
+
+.card-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: var(--radius);
+    background: var(--brand-50);
+    color: var(--brand);
+    display: grid;
+    place-items: center;
+    font-size: 13px;
+    flex-shrink: 0;
+}
+
+.card-profit .card-icon {
+    background: var(--pos-bg);
+    color: var(--pos);
+}
+
+.card-content {
+    min-width: 0;
+}
+
+.card-label {
+    font-size: 11px;
+    color: var(--ink-2);
+    font-weight: 500;
+    margin-bottom: 2px;
+}
+
+.card-value {
+    font-size: 18px;
+    font-weight: 650;
+    letter-spacing: -0.015em;
+    color: var(--ink);
+}
+
+/* Metric lists */
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 14px;
+}
+
+.metric-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+}
+
+.metric-box h3 {
+    margin: 0;
+    padding: 10px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink);
+    border-bottom: 1px solid var(--border);
+}
+
+.metric-list {
+    padding: 4px 14px 10px;
+}
+
+.metric-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 7px 0;
+    border-bottom: 1px dashed var(--border);
+}
+
+.metric-item:last-child {
+    border-bottom: none;
+}
+
+.metric-label {
+    font-size: 12px;
+    color: var(--ink-2);
+}
+
+.metric-value {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--ink);
+}
+
+.metric-value.negative {
+    color: var(--neg);
+}
+
+/* ==========================================================================
+   10. Trade table
+   ========================================================================== */
+
+.table-container {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+}
+
+.table-container h3 {
+    margin: 0;
+    padding: 11px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    border-bottom: 1px solid var(--border);
+}
+
+.table-controls {
+    display: flex;
+    gap: 8px;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface-alt);
+    flex-wrap: wrap;
+}
+
+.search-input {
+    flex: 1;
+    min-width: 180px;
+    padding: 6px 10px;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius);
+    font-family: inherit;
+    font-size: 12px;
+    background: var(--surface);
+    color: var(--ink);
+}
+
+.search-input::placeholder {
+    color: var(--ink-3);
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--brand);
+    box-shadow: 0 0 0 3px var(--brand-50);
+}
+
+.filter-select {
+    padding: 6px 26px 6px 10px;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius);
+    font-family: inherit;
+    font-size: 12px;
+    background: var(--surface);
+    color: var(--ink);
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%235b6471' d='M6 8.5 2 4.5h8z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 9px center;
+}
+
+.filter-select:focus {
+    outline: none;
+    border-color: var(--brand);
+    box-shadow: 0 0 0 3px var(--brand-50);
+}
+
+.table-wrapper {
+    overflow-x: auto;
+    max-height: 520px;
+    overflow-y: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: var(--surface-alt);
+    border-bottom: 1px solid var(--border-strong);
+    padding: 8px 9px;
+    text-align: right;
+    font-size: 10.5px;
+    font-weight: 600;
+    color: var(--ink-2);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+}
+
+thead th:first-child,
+thead th:nth-child(2),
+thead th:last-child {
+    text-align: left;
+}
+
+tbody td {
+    padding: 7px 9px;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+    text-align: right;
+    white-space: nowrap;
+    color: var(--ink);
+}
+
+tbody td:first-child,
+tbody td:nth-child(2),
+tbody td:last-child {
+    text-align: left;
+    color: var(--ink-2);
+}
+
+/* Pin the entry-time column so context survives horizontal scroll */
+thead th:first-child,
+tbody td:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    background: var(--surface);
+    box-shadow: 1px 0 0 var(--border);
+}
+
+thead th:first-child {
+    z-index: 3;
+    background: var(--surface-alt);
+}
+
+tbody tr:hover td {
+    background: var(--surface-hover);
+}
+
+tbody tr:hover td:first-child {
+    background: var(--surface-hover);
+}
+
+tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* P&L colouring — beat app.js injected rules on specificity */
+tbody td.positive {
+    color: var(--pos);
+    font-weight: 600;
+}
+
+tbody td.negative {
+    color: var(--neg);
+    font-weight: 600;
+}
+
+/* Exit reason badges */
+tbody td .exit-badge {
+    display: inline-block;
+    padding: 2px 7px;
+    border-radius: 3px;
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    border: 1px solid transparent;
+}
+
+tbody td .exit-badge.exit-target {
+    background: var(--pos-bg);
+    color: #00784a;
+    border-color: #bce7d3;
+}
+
+tbody td .exit-badge.exit-max-loss {
+    background: var(--neg-bg);
+    color: #b32a22;
+    border-color: #f6ccc8;
+}
+
+tbody td .exit-badge.exit-time {
+    background: var(--info-bg);
+    color: var(--nav-bg-dark);
+    border-color: var(--brand-100);
+}
+
+tbody td .exit-badge.exit-iv-reversion {
+    background: var(--warn-bg);
+    color: #8a5300;
+    border-color: #f2ddb5;
+}
+
+/* ==========================================================================
+   11. Right rail widgets
+   ========================================================================== */
+
+.rail-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.rail-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 9px 14px;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s ease;
+}
+
+.rail-row:last-child {
+    border-bottom: none;
+}
+
+.rail-row:hover {
+    background: var(--surface-hover);
+}
+
+.rail-left {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    min-width: 0;
+}
+
+.rail-badge {
+    width: 24px;
+    height: 24px;
+    border-radius: 5px;
+    background: var(--brand-50);
+    color: var(--brand);
+    display: grid;
+    place-items: center;
+    font-size: 9.5px;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.rail-name {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.rail-meta {
+    font-size: 10.5px;
+    color: var(--ink-3);
+}
+
+.rail-right {
+    text-align: right;
+    flex-shrink: 0;
+}
+
+.rail-value {
+    font-size: 12.5px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+
+.rail-change {
+    font-size: 10.5px;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Config read-out */
+.kv-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.kv-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 7px 14px;
+    border-bottom: 1px dashed var(--border);
+}
+
+.kv-row:last-child {
+    border-bottom: none;
+}
+
+.kv-key {
+    font-size: 11.5px;
+    color: var(--ink-2);
+}
+
+.kv-val {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+}
+
+.pill {
+    display: inline-block;
+    padding: 1px 7px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}
+
+.pill-pos {
+    background: var(--pos-bg);
+    color: #00784a;
+}
+
+.pill-neg {
+    background: var(--neg-bg);
+    color: #b32a22;
+}
+
+.pill-info {
+    background: var(--info-bg);
+    color: var(--nav-bg-dark);
+}
+
+.pill-warn {
+    background: var(--warn-bg);
+    color: #8a5300;
+}
+
+/* Notice block */
+.notice {
+    display: flex;
+    gap: 9px;
+    padding: 11px 14px;
+    font-size: 11.5px;
+    line-height: 1.55;
+    color: var(--ink-2);
+}
+
+.notice-icon {
+    flex-shrink: 0;
+    font-size: 13px;
+    line-height: 1.3;
+}
+
+.notice strong {
+    color: var(--ink);
+    font-weight: 600;
+}
+
+/* ==========================================================================
+   12. Overlays
+   ========================================================================== */
+
+.error-message {
+    position: fixed;
+    right: 18px;
+    bottom: 18px;
+    z-index: 500;
+    max-width: 380px;
+    padding: 11px 14px;
+    background: var(--surface);
+    border: 1px solid #f0b4ae;
+    border-left: 3px solid var(--neg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-pop);
+    color: var(--ink);
+    font-size: 12.5px;
+}
+
+.loading-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 600;
+    background: rgba(27, 31, 36, 0.42);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    backdrop-filter: blur(2px);
+}
+
+.loading-overlay p {
+    margin: 0;
+    padding: 9px 16px;
+    background: var(--surface);
+    border-radius: var(--radius);
+    font-size: 12.5px;
+    font-weight: 500;
+    box-shadow: var(--shadow-pop);
+}
+
+.spinner {
+    width: 34px;
+    height: 34px;
+    border: 3px solid rgba(255, 255, 255, 0.35);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.btn-loader {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* ==========================================================================
+   13. Responsive
+   ========================================================================== */
+
+@media (max-width: 1320px) {
+    .app-grid {
+        grid-template-columns: 270px minmax(0, 1fr);
+    }
+
+    .col-right {
+        display: none;
+    }
+}
+
+@media (max-width: 960px) {
+    .app-grid {
+        grid-template-columns: minmax(0, 1fr);
+        padding: 12px;
+    }
+
+    .col-left {
+        position: static;
+    }
+
+    .topnav,
+    .gift-strip {
+        display: none;
+    }
+
+    .portfolio-stat-card,
+    .card {
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+    }
+}
+
+@media (max-width: 600px) {
+    .topnav-secondary,
+    .user-info {
+        display: none;
+    }
+
+    .monthly-profits-grid {
+        grid-template-columns: repeat(auto-fill, minmax(112px, 1fr));
+    }
+}

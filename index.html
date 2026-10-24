@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Optwise — Options Backtesting Terminal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css?v=3">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+
+<body>
+
+    <!-- ===================== Top app bar ===================== -->
+    <header class="topbar">
+        <div class="topbar-inner">
+            <div class="brand">
+                <span class="brand-mark">O</span>
+                <span>Optwise</span>
+            </div>
+
+            <div class="gift-strip">
+                <span class="gift-label">GIFT Nifty</span>
+                <span class="gift-value">22,588.00</span>
+                <span class="gift-change down">−20.00 (−0.09%) ↘</span>
+            </div>
+
+            <nav class="topnav">
+                <a href="#" class="active">Dashboard</a>
+                <a href="#">Strategy</a>
+                <a href="#">Positions</a>
+                <a href="#">Reports</a>
+            </nav>
+
+            <div class="topbar-spacer"></div>
+
+            <nav class="topnav topnav-secondary">
+                <a href="#">Markets</a>
+                <a href="#">Docs</a>
+            </nav>
+
+            <div class="market-status">
+                <span class="status-dot"></span>
+                <span class="market-status-label">Markets Closed</span>
+            </div>
+
+            <div class="user-profile">
+                <div class="avatar">OP</div>
+                <div class="user-info">
+                    <span class="user-name">Onkar Pravin Patil</span>
+                    <span class="user-role">Trader</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ===================== Index ticker strip ===================== -->
+    <div class="ticker-strip">
+        <div class="ticker-inner">
+            <div class="ticker-item">
+                <span class="ticker-name">Nifty 50</span>
+                <span class="ticker-value">22,600.00</span>
+                <span class="ticker-change down">−87.65 (−0.39%) ↘</span>
+            </div>
+            <div class="ticker-item">
+                <span class="ticker-name">Nifty Bank</span>
+                <span class="ticker-value">54,287.35</span>
+                <span class="ticker-change down">−638.35 (−1.16%) ↘</span>
+            </div>
+            <div class="ticker-item">
+                <span class="ticker-name">Fin Nifty</span>
+                <span class="ticker-value">24,403.00</span>
+                <span class="ticker-change down">−254.70 (−1.03%) ↘</span>
+            </div>
+            <div class="ticker-item">
+                <span class="ticker-name">India VIX</span>
+                <span class="ticker-value">16.86</span>
+                <span class="ticker-change up">+1.10 (+6.98%) ↗</span>
+            </div>
+            <div class="ticker-item">
+                <span class="ticker-name">Nifty Midcap</span>
+                <span class="ticker-value">13,033.05</span>
+                <span class="ticker-change down">−142.20 (−1.08%) ↘</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== Page ===================== -->
+    <div class="app-grid">
+
+        <!-- ---------- Left rail: strategy parameters ---------- -->
+        <aside class="col-left sidebar">
+            <div class="panel">
+                <div class="panel-head">
+                    <h3 class="panel-title">Backtest parameters</h3>
+                    <span class="panel-sub">NIFTY</span>
+                </div>
+                <div class="panel-body">
+                    <form id="backtestForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="fromDate">From</label>
+                                <input type="date" id="fromDate" name="fromDate" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="toDate">To</label>
+                                <input type="date" id="toDate" name="toDate" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="ivThreshold">IV threshold (%)</label>
+                                <input type="number" id="ivThreshold" name="ivThreshold" value="12.0" min="0.1"
+                                    max="100" step="0.1" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="maxPositions">Max positions</label>
+                                <input type="number" id="maxPositions" name="maxPositions" value="3" min="1" max="50"
+                                    step="1" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="targetProfit">Target (%)</label>
+                                <input type="number" id="targetProfit" name="targetProfit" value="50.0" min="1"
+                                    max="100" step="1" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="maxLoss">Stop loss (%)</label>
+                                <input type="number" id="maxLoss" name="maxLoss" value="20.0" min="1" max="100" step="1"
+                                    required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="maxHoldHours">Max hold (hrs)</label>
+                                <input type="number" id="maxHoldHours" name="maxHoldHours" value="24.0" min="0.5"
+                                    max="720" step="0.5" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="minGapMinutes">Min gap (min)</label>
+                                <input type="number" id="minGapMinutes" name="minGapMinutes" value="30" min="0"
+                                    max="1440" step="5" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="lots">Lots</label>
+                                <input type="number" id="lots" name="lots" value="1" min="1" max="100" step="1"
+                                    required>
+                            </div>
+                            <div class="form-group">
+                                <label for="hedgeType">Hedge</label>
+                                <select id="hedgeType" name="hedgeType" required>
+                                    <option value="iron_condor" selected>Iron Condor</option>
+                                    <option value="protective">Protective</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-primary" id="runBacktestBtn">
+                            <span class="btn-text">Run Backtest</span>
+                            <span class="btn-loader" style="display: none;">Running…</span>
+                        </button>
+                        <p class="field-hint">Lot size 75 · 1-minute ATM data via Dhan</p>
+                    </form>
+                </div>
+            </div>
+        </aside>
+
+        <!-- ---------- Main column ---------- -->
+        <main class="col-main">
+
+            <!-- Portfolio overview (static) -->
+            <section class="panel portfolio-overview">
+                <div class="panel-head">
+                    <h2 class="panel-title">Portfolio overview</h2>
+                    <span class="panel-sub">Oct 2025 – Oct 2026 · 13 months</span>
+                </div>
+                <div class="portfolio-stats-grid">
+                    <div class="portfolio-stat-card">
+                        <span class="portfolio-stat-label">Capital invested</span>
+                        <span class="portfolio-stat-value">₹10,00,000</span>
+                        <span class="stat-meta">Deployed margin</span>
+                    </div>
+                    <div class="portfolio-stat-card portfolio-stat-highlight">
+                        <span class="portfolio-stat-label">Total profits</span>
+                        <span class="portfolio-stat-value">₹16,07,006</span>
+                        <span class="stat-meta">+160.7% on capital</span>
+                    </div>
+                    <div class="portfolio-stat-card">
+                        <span class="portfolio-stat-label">Win rate</span>
+                        <span class="portfolio-stat-value">78.6%</span>
+                        <span class="stat-meta">Trade-level</span>
+                    </div>
+                    <div class="portfolio-stat-card portfolio-stat-risk">
+                        <span class="portfolio-stat-label">Max drawdown</span>
+                        <span class="portfolio-stat-value">₹2,08,264</span>
+                        <span class="stat-meta">Peak to trough</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Monthly P&L -->
+            <section class="panel">
+                <div class="panel-head">
+                    <h2 class="panel-title">Monthly P&amp;L</h2>
+                    <span class="panel-sub">Net ₹16,07,006 · 10 up / 3 down</span>
+                </div>
+                <div class="panel-body">
+                    <div class="monthly-profits-grid">
+                        <div class="profit-card profit-positive">
+                            <div class="profit-month">Oct 2025</div>
+                            <div class="profit-amount">₹1,60,000</div>
+                        </div>
+                        <div class="profit-card profit-positive">
+                            <div class="profit-month">Nov 2025</div>
+                            <div class="profit-amount">₹1,12,000</div>
+                        </div>
+                        <div class="profit-card profit-positive">
+                            <div class="profit-month">Dec 2025</div>
+                            <div class="profit-amount">₹1,31,728</div>
+                        </div>
+                        <div class="profit-card profit-negative">
+                            <div class="profit-month">Jan 2026</div>
+                            <div class="profit-amount">−₹4,602</div>
+                        </div>
+                        <div class="profit-card profit-positive">
+                            <div class="profit-month">Feb 2026</div>
+                            <div class="profit-amount">₹86,684</div>
+                        </div>
+                        <div class="profit-card profit-positive">
+                            <div class="profit-month">Mar 2026</div>
+                            <div class="profit-amount">₹1,44,323</div>
+                        </div>
+                        <div class="profit-card profit-negative">
+                            <div class="profit-month">Apr 2026</div>
+                            <div class="profit-amount">−₹11,692</div>
+                        </div>
+                        <div class="profit-card profit-positive">
+                            <div class="profit-month">May 2026</div>
+                            <div class="profit-amount">₹63,564</div>
+                        </div>
+                        <div class="profit-card profit-negative">
+                            <div class="profit-month">Jun 2026</div>
+                            <div class="profit-amount">−₹2,16,543</div>
+                        </div>
+                        <div class="profit-card profit-positive">
+                            <div class="profit-month">Jul 2026</div>
+                            <div class="profit-amount">₹1,36,232</div>
+                        </div>
+                        <div class="profit-card profit-positive">
+                            <div class="profit-month">Aug 2026</div>
+                            <div class="profit-amount">₹37,376</div>
+                        </div>
+                        <div class="profit-card profit-positive">
+                            <div class="profit-month">Sep 2026</div>
+                            <div class="profit-amount">₹10,30,257</div>
+                        </div>
+                        <div class="profit-card profit-negative">
+                            <div class="profit-month">Oct 2026</div>
+                            <div class="profit-amount">−₹62,321</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Results panel (populated by app.js) -->
+            <div id="resultsPanel" class="results-panel" style="display: none;">
+
+                <p id="backtestInfoBanner" class="backtest-info-banner" role="status" style="display: none;"></p>
+
+                <section class="panel">
+                    <div class="panel-head">
+                        <h2 class="panel-title">Backtest results</h2>
+                        <span class="panel-sub">Latest run</span>
+                    </div>
+                    <div class="summary-cards">
+                        <div class="card">
+                            <div class="card-icon">#</div>
+                            <div class="card-content">
+                                <div class="card-label">Total trades</div>
+                                <div class="card-value" id="totalTrades">-</div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-icon">%</div>
+                            <div class="card-content">
+                                <div class="card-label">Win rate</div>
+                                <div class="card-value" id="winRate">-</div>
+                            </div>
+                        </div>
+                        <div class="card card-profit">
+                            <div class="card-icon">₹</div>
+                            <div class="card-content">
+                                <div class="card-label">Total P&amp;L</div>
+                                <div class="card-value" id="totalPnl">-</div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-icon">~</div>
+                            <div class="card-content">
+                                <div class="card-label">Avg P&amp;L / trade</div>
+                                <div class="card-value" id="avgPnl">-</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <div class="metrics-grid">
+                    <div class="metric-box">
+                        <h3>Performance metrics</h3>
+                        <div class="metric-list">
+                            <div class="metric-item">
+                                <span class="metric-label">Winning trades</span>
+                                <span class="metric-value" id="winningTrades">-</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Losing trades</span>
+                                <span class="metric-value" id="losingTrades">-</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Worst trade</span>
+                                <span class="metric-value negative" id="worstTrade">-</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="metric-box">
+                        <h3>Risk metrics</h3>
+                        <div class="metric-list">
+                            <div class="metric-item">
+                                <span class="metric-label">Max loss cap hit</span>
+                                <span class="metric-value" id="maxLossHits">-</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Avg premium received</span>
+                                <span class="metric-value" id="avgPremium">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <canvas id="cumulativePnlChart" style="display: none;"></canvas>
+
+                <div class="table-container">
+                    <h3>Trade history</h3>
+                    <div class="table-controls">
+                        <input type="text" id="searchInput" placeholder="Search trades…" class="search-input">
+                        <select id="filterExitReason" class="filter-select">
+                            <option value="">All exit reasons</option>
+                            <option value="TARGET">Target</option>
+                            <option value="MAX_LOSS">Max loss</option>
+                            <option value="TIME">Time</option>
+                            <option value="IV_REVERSION">IV reversion</option>
+                        </select>
+                        <button id="exportCsvBtn" class="btn-secondary">Export CSV</button>
+                    </div>
+                    <div class="table-wrapper">
+                        <table id="tradesTable">
+                            <thead>
+                                <tr>
+                                    <th>Entry time</th>
+                                    <th>Exit time</th>
+                                    <th>Entry spot</th>
+                                    <th>Exit spot</th>
+                                    <th>Premium</th>
+                                    <th>P&amp;L (pts)</th>
+                                    <th>P&amp;L after costs</th>
+                                    <th>Hold hrs</th>
+                                    <th>Exit reason</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tradesTableBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- ---------- Right rail ---------- -->
+        <aside class="col-right">
+
+            <section class="panel">
+                <div class="panel-head">
+                    <h3 class="panel-title">Top months</h3>
+                    <a href="#" class="panel-link">view all ›</a>
+                </div>
+                <div class="rail-list">
+                    <div class="rail-row">
+                        <div class="rail-left">
+                            <span class="rail-badge">SEP</span>
+                            <div>
+                                <div class="rail-name">Sep 2026</div>
+                                <div class="rail-meta">64.1% of net</div>
+                            </div>
+                        </div>
+                        <div class="rail-right">
+                            <div class="rail-value up">₹10,30,257</div>
+                            <div class="rail-change up">↗ best</div>
+                        </div>
+                    </div>
+                    <div class="rail-row">
+                        <div class="rail-left">
+                            <span class="rail-badge">OCT</span>
+                            <div>
+                                <div class="rail-name">Oct 2025</div>
+                                <div class="rail-meta">10.0% of net</div>
+                            </div>
+                        </div>
+                        <div class="rail-right">
+                            <div class="rail-value up">₹1,60,000</div>
+                            <div class="rail-change up">↗</div>
+                        </div>
+                    </div>
+                    <div class="rail-row">
+                        <div class="rail-left">
+                            <span class="rail-badge">MAR</span>
+                            <div>
+                                <div class="rail-name">Mar 2026</div>
+                                <div class="rail-meta">9.0% of net</div>
+                            </div>
+                        </div>
+                        <div class="rail-right">
+                            <div class="rail-value up">₹1,44,323</div>
+                            <div class="rail-change up">↗</div>
+                        </div>
+                    </div>
+                    <div class="rail-row">
+                        <div class="rail-left">
+                            <span class="rail-badge">JUL</span>
+                            <div>
+                                <div class="rail-name">Jul 2026</div>
+                                <div class="rail-meta">8.5% of net</div>
+                            </div>
+                        </div>
+                        <div class="rail-right">
+                            <div class="rail-value up">₹1,36,232</div>
+                            <div class="rail-change up">↗</div>
+                        </div>
+                    </div>
+                    <div class="rail-row">
+                        <div class="rail-left">
+                            <span class="rail-badge">JUN</span>
+                            <div>
+                                <div class="rail-name">Jun 2026</div>
+                                <div class="rail-meta">worst month</div>
+                            </div>
+                        </div>
+                        <div class="rail-right">
+                            <div class="rail-value down">−₹2,16,543</div>
+                            <div class="rail-change down">↘</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="panel">
+                <div class="panel-head">
+                    <h3 class="panel-title">Active configuration</h3>
+                    <span class="pill pill-info">Iron Condor</span>
+                </div>
+                <div class="kv-list">
+                    <div class="kv-row">
+                        <span class="kv-key">Underlying</span>
+                        <span class="kv-val">NIFTY · ATM</span>
+                    </div>
+                    <div class="kv-row">
+                        <span class="kv-key">Entry filter</span>
+                        <span class="kv-val">IV ≤ 12.0%</span>
+                    </div>
+                    <div class="kv-row">
+                        <span class="kv-key">Target / stop</span>
+                        <span class="kv-val">50% / 20%</span>
+                    </div>
+                    <div class="kv-row">
+                        <span class="kv-key">Max hold</span>
+                        <span class="kv-val">24 hrs</span>
+                    </div>
+                    <div class="kv-row">
+                        <span class="kv-key">Concurrency</span>
+                        <span class="kv-val">3 positions</span>
+                    </div>
+                    <div class="kv-row">
+                        <span class="kv-key">Size</span>
+                        <span class="kv-val">1 lot × 75</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="panel">
+                <div class="panel-head">
+                    <h3 class="panel-title">Data &amp; execution</h3>
+                    <span class="pill pill-warn">Check</span>
+                </div>
+                <div class="notice">
+                    <span class="notice-icon">!</span>
+                    <div>
+                        <strong>Hedge cost is not deducted.</strong> P&amp;L shown is before wing cost, slippage and
+                        brokerage. Treat these figures as signal quality under ideal execution, not account returns.
+                    </div>
+                </div>
+            </section>
+        </aside>
+    </div>
+
+    <!-- ===================== Overlays ===================== -->
+    <div id="errorMessage" class="error-message" style="display: none;"></div>
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div class="spinner"></div>
+        <p>Running backtest — this may take a few minutes.</p>
+    </div>
+
+    <script src="app.js?v=6" defer></script>
+</body>
+
+</html>

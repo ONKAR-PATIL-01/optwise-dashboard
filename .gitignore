@@ -1,0 +1,14 @@
+# Backups
+*.bak
+
+# Local backend (keeps broker credentials out of this repo)
+api_server.py
+start.sh
+
+# Unused
+styles_responsive.css
+
+# OS / editor
+.DS_Store
+.vscode/
+__pycache__/
